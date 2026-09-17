@@ -96,13 +96,15 @@ function zxingDecode(canvas) {
     hints.set(Z.DecodeHintType.TRY_HARDER, true);
     zxingReader.setHints(hints);
   }
-  try {
-    const bitmap = new Z.BinaryBitmap(new Z.HybridBinarizer(new Z.HTMLCanvasElementLuminanceSource(canvas)));
-    const r = zxingReader.decode(bitmap);
-    return { value: r.getText(), format: normalizeFormat(Z.BarcodeFormat[r.getBarcodeFormat()]) };
-  } catch (_) {
-    return null;
+  const source = new Z.HTMLCanvasElementLuminanceSource(canvas);
+  // Hybrid handles uneven light; global histogram rescues some noisy photos.
+  for (const Binarizer of [Z.HybridBinarizer, Z.GlobalHistogramBinarizer]) {
+    try {
+      const r = zxingReader.decode(new Z.BinaryBitmap(new Binarizer(source)));
+      return { value: r.getText(), format: normalizeFormat(Z.BarcodeFormat[r.getBarcodeFormat()]) };
+    } catch (_) { /* try the next binarizer */ }
   }
+  return null;
 }
 
 async function detect(source, canvas) {
@@ -138,9 +140,48 @@ export async function loadImage(file) {
   }
 }
 
+// Real photos are often large, tilted or with a small code: try a few views
+// of the same image, cheapest first, and stop at the first hit.
 export async function scanImage(img) {
-  const canvas = drawTo(document.createElement("canvas"), img, img.naturalWidth, img.naturalHeight, 1600);
-  return (await detect(canvas, canvas)) || null;
+  const w = img.naturalWidth, h = img.naturalHeight;
+  const tmp = () => document.createElement("canvas");
+  const canvas = tmp();
+  const views = [
+    () => drawTo(canvas, img, w, h, 1600),
+    () => drawTo(canvas, img, w, h, 3000),
+    () => crop(canvas, img, w, h, 0.6),
+    () => crop(canvas, img, w, h, 0.35),
+    () => rotate(canvas, drawTo(tmp(), img, w, h, 1600)),
+    () => rotate(canvas, crop(tmp(), img, w, h, 0.6)),
+    () => rotate(canvas, crop(tmp(), img, w, h, 0.35)),
+  ];
+  for (const view of views) {
+    const c = view();
+    const r = await detect(c, c);
+    if (r) return r;
+  }
+  return null;
+}
+
+// Center crop, upscaled so a small code gets more pixels.
+function crop(canvas, img, w, h, fraction) {
+  const cw = w * fraction, ch = h * fraction;
+  const k = Math.min(1600 / Math.max(cw, ch), 3);
+  canvas.width = Math.round(cw * k);
+  canvas.height = Math.round(ch * k);
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  ctx.drawImage(img, (w - cw) / 2, (h - ch) / 2, cw, ch, 0, 0, canvas.width, canvas.height);
+  return canvas;
+}
+
+function rotate(canvas, src) {
+  canvas.width = src.height;
+  canvas.height = src.width;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+  ctx.rotate(Math.PI / 2);
+  ctx.drawImage(src, -src.width / 2, -src.height / 2);
+  return canvas;
 }
 
 // Live camera scanner bound to a <video> element.

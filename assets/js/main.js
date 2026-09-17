@@ -471,7 +471,33 @@ $("btnTorch").addEventListener("click", async () => {
 /* ---------- Menu: sort, backup, info ---------- */
 
 const SORT_LABEL = { recent: "Usate di recente", name: "Nome" };
-function refreshMenu() { $("mSortVal").textContent = SORT_LABEL[sortMode]; }
+const THEME_LABEL = { auto: "Automatico", light: "Chiaro", dark: "Scuro" };
+const THEME_BG = { light: "#F3F2EF", dark: "#2B2A28" };
+let themeMode = settings.get("theme", "auto");
+
+// "auto" follows the system; light/dark pin the palette and the browser bar color.
+function applyTheme() {
+  const root = document.documentElement;
+  if (themeMode === "auto") delete root.dataset.theme;
+  else root.dataset.theme = themeMode;
+  document.querySelectorAll('meta[name="theme-color"]').forEach((m) => {
+    const scheme = m.media.includes("dark") ? "dark" : "light";
+    m.content = THEME_BG[themeMode === "auto" ? scheme : themeMode];
+  });
+}
+applyTheme();
+
+function refreshMenu() {
+  $("mSortVal").textContent = SORT_LABEL[sortMode];
+  $("mThemeVal").textContent = THEME_LABEL[themeMode];
+}
+
+$("mTheme").addEventListener("click", () => {
+  themeMode = { auto: "light", light: "dark", dark: "auto" }[themeMode];
+  settings.set("theme", themeMode);
+  applyTheme();
+  refreshMenu();
+});
 
 $("btnMenu").addEventListener("click", () => { refreshMenu(); openOverlay($("menu")); });
 
