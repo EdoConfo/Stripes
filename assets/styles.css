@@ -20,14 +20,15 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0E0F12;
-    --surface: #1A1B20;
-    --surface-2: #24262C;
-    --text: #F2F2F4;
-    --muted: #9A9DA6;
-    --line: rgba(255, 255, 255, 0.1);
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.35);
-    --danger: #FF6B6B;
+    /* Soft warm graphite: the dark twin of the paper-like light theme */
+    --bg: #2B2A28;
+    --surface: #363532;
+    --surface-2: #403E3B;
+    --text: #EFEDE8;
+    --muted: #A9A59D;
+    --line: rgba(255, 250, 240, 0.09);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.18), 0 8px 24px rgba(0, 0, 0, 0.2);
+    --danger: #F28B82;
   }
 }
 
@@ -243,7 +244,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 
 .sheet-wrap { position: fixed; inset: 0; z-index: 30; display: flex; align-items: flex-end; justify-content: center; }
 .sheet-wrap.center { align-items: center; padding: 20px; }
-.scrim { position: absolute; inset: 0; background: rgba(0, 0, 0, .42); animation: fade .2s ease; }
+.scrim { position: absolute; inset: 0; background: rgba(20, 18, 16, .42); animation: fade .2s ease; }
 @keyframes fade { from { opacity: 0; } }
 
 .sheet {
