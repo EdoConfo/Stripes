@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Le tue carte fedeltà sempre in tasca, anche offline.">
+<meta name="theme-color" content="#F3F2EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E0F12" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Stripes">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="assets/img/icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Stripes · Carte fedeltà</title>
+<link rel="stylesheet" href="assets/styles.css?v=1">
+<script src="assets/vendor/bwip-js.min.js?v=1" defer></script>
+<script src="assets/vendor/zxing.min.js?v=1" defer></script>
+<script type="module" src="assets/js/main.js?v=1"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8v8M10 8v8M13 8v8M17 8v8"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L6 21"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+  <symbol id="i-torch" viewBox="0 0 24 24"><path d="M6 2h12v4l-3 5v11H9V11L6 6Z"/><path d="M12 14v2"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 21V9M7 14l5-5 5 5M5 3h14"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 24 24"><path d="M3 6h13M3 12h9M3 18h5M17 10V20M14 17l3 3 3-3"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-logo" viewBox="0 0 32 32"><rect x="4" y="6" width="3" height="20" rx="1.5" fill="#FF5B3A" stroke="none"/><rect x="10" y="6" width="5" height="20" rx="2.5" fill="#FFB224" stroke="none"/><rect x="18" y="6" width="2.5" height="20" rx="1.25" fill="#12A594" stroke="none"/><rect x="23.5" y="6" width="4.5" height="20" rx="2.25" fill="#3E63DD" stroke="none"/></symbol>
+</svg>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <svg class="logo"><use href="#i-logo"/></svg>
+      <h1>Stripes</h1>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="btnSearch" aria-label="Cerca" hidden><svg><use href="#i-search"/></svg></button>
+      <button class="icon-btn" id="btnMenu" aria-label="Menu"><svg><use href="#i-more"/></svg></button>
+    </div>
+  </header>
+
+  <div class="search" id="searchBar" hidden>
+    <svg><use href="#i-search"/></svg>
+    <input type="search" id="searchInput" placeholder="Cerca una carta" autocomplete="off" enterkeyhint="search">
+  </div>
+
+  <main>
+    <section class="empty" id="empty" hidden>
+      <div class="empty-art" aria-hidden="true">
+        <div class="ghost g1"></div><div class="ghost g2"></div><div class="ghost g3"></div>
+      </div>
+      <h2>Nessuna carta, per ora</h2>
+      <p>Aggiungi le tue carte fedeltà: inquadri il codice una volta e le ritrovi qui, anche senza connessione.</p>
+      <button class="btn primary" id="btnAddEmpty"><svg><use href="#i-plus"/></svg>Aggiungi carta</button>
+    </section>
+
+    <div class="grid" id="grid"></div>
+    <p class="no-results" id="noResults" hidden>Nessuna carta trovata.</p>
+  </main>
+
+  <button class="fab" id="fab" aria-label="Aggiungi carta" hidden><svg><use href="#i-plus"/></svg></button>
+</div>
+
+<!-- CARD DETAIL -->
+<div class="screen" id="detail" hidden>
+  <div class="screen-bar">
+    <button class="icon-btn" data-close aria-label="Indietro"><svg><use href="#i-back"/></svg></button>
+    <div class="bar-title" id="detailTitle"></div>
+    <button class="icon-btn" id="detailEdit" aria-label="Modifica"><svg><use href="#i-edit"/></svg></button>
+  </div>
+  <div class="detail-body">
+    <div class="card-face big" id="detailFace"></div>
+    <button class="code-panel" id="detailCode" aria-label="Ingrandisci codice">
+      <div class="code-img" id="detailCodeImg"></div>
+      <div class="code-num" id="detailNum"></div>
+      <div class="code-hint"><svg><use href="#i-expand"/></svg>Tocca per ingrandire</div>
+    </button>
+    <p class="warn" id="detailWarn" hidden>Il numero non è valido per il formato salvato: mostrato come Code 128.</p>
+    <p class="note" id="detailNote" hidden></p>
+    <div class="detail-actions">
+      <button class="btn" id="detailCopy"><svg><use href="#i-copy"/></svg>Copia numero</button>
+      <button class="btn danger" id="detailDelete"><svg><use href="#i-trash"/></svg>Elimina</button>
+    </div>
+  </div>
+</div>
+
+<!-- ZOOMED CODE -->
+<div class="zoom" id="zoom" hidden>
+  <div class="zoom-inner" id="zoomInner">
+    <div class="code-img" id="zoomImg"></div>
+    <div class="code-num" id="zoomNum"></div>
+  </div>
+  <button class="icon-btn zoom-close" data-close aria-label="Chiudi"><svg><use href="#i-close"/></svg></button>
+</div>
+
+<!-- EDITOR -->
+<div class="sheet-wrap" id="editor" hidden>
+  <div class="scrim" data-close></div>
+  <form class="sheet" id="editorForm" novalidate>
+    <div class="sheet-head">
+      <button type="button" class="link" data-close>Annulla</button>
+      <h2 id="editorTitle">Nuova carta</h2>
+      <button type="submit" class="link strong" id="editorSave">Salva</button>
+    </div>
+    <div class="sheet-body">
+      <div class="card-face" id="editorFace"></div>
+
+      <label class="field">
+        <span>Negozio</span>
+        <input id="fName" autocomplete="off" placeholder="Es. Esselunga" enterkeyhint="next" maxlength="40">
+      </label>
+      <div class="chips" id="brandChips"></div>
+
+      <div class="group-title">Codice</div>
+      <div class="scan-row">
+        <button type="button" class="btn primary" id="btnScan"><svg><use href="#i-camera"/></svg>Inquadra codice</button>
+        <label class="btn" id="btnScanPhoto"><svg><use href="#i-image"/></svg>Da foto<input type="file" accept="image/*" id="scanPhotoInput" hidden></label>
+      </div>
+      <label class="field">
+        <span>Numero carta</span>
+        <input id="fNumber" autocomplete="off" inputmode="text" placeholder="Inquadra o scrivi il numero" spellcheck="false" maxlength="512">
+      </label>
+      <label class="field">
+        <span>Formato</span>
+        <select id="fFormat"></select>
+      </label>
+      <div class="code-preview" id="codePreview" hidden></div>
+
+      <div class="group-title">Aspetto</div>
+      <div class="swatches" id="swatches"></div>
+      <div class="photo-row">
+        <label class="btn" id="btnPhoto"><svg><use href="#i-image"/></svg><span id="photoLabel">Foto della carta</span><input type="file" accept="image/*" id="photoInput" hidden></label>
+        <button type="button" class="btn ghost" id="btnPhotoRemove" hidden>Rimuovi foto</button>
+      </div>
+
+      <label class="field">
+        <span>Nota <em>(facoltativa)</em></span>
+        <input id="fNote" autocomplete="off" placeholder="Es. carta di mamma" maxlength="80">
+      </label>
+    </div>
+  </form>
+</div>
+
+<!-- SCANNER -->
+<div class="scanner" id="scanner" hidden>
+  <video id="scanVideo" playsinline muted></video>
+  <div class="scan-frame"><div class="scan-line"></div></div>
+  <div class="scan-top">
+    <button class="icon-btn on-dark" data-close aria-label="Chiudi"><svg><use href="#i-close"/></svg></button>
+    <button class="icon-btn on-dark" id="btnTorch" aria-label="Torcia" hidden><svg><use href="#i-torch"/></svg></button>
+  </div>
+  <p class="scan-msg" id="scanMsg">Inquadra il codice a barre o il QR della carta</p>
+</div>
+
+<!-- MENU -->
+<div class="sheet-wrap" id="menu" hidden>
+  <div class="scrim" data-close></div>
+  <div class="sheet small">
+    <div class="menu-list">
+      <button class="menu-item" id="mSort"><svg><use href="#i-sort"/></svg><span>Ordina</span><b id="mSortVal"></b></button>
+      <button class="menu-item" id="mExport"><svg><use href="#i-download"/></svg><span>Esporta backup</span></button>
+      <label class="menu-item"><svg><use href="#i-upload"/></svg><span>Importa backup</span><input type="file" accept="application/json,.json" id="importInput" hidden></label>
+      <button class="menu-item" id="mAbout"><svg><use href="#i-info"/></svg><span>Informazioni</span></button>
+    </div>
+    <button class="btn block" data-close>Chiudi</button>
+  </div>
+</div>
+
+<!-- DIALOG -->
+<div class="sheet-wrap center" id="dialog" hidden>
+  <div class="scrim" data-close></div>
+  <div class="dialog">
+    <h3 id="dialogTitle"></h3>
+    <p id="dialogText"></p>
+    <div class="dialog-actions">
+      <button class="btn" data-close id="dialogCancel">Annulla</button>
+      <button class="btn danger" id="dialogOk">Elimina</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
