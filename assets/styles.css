@@ -243,15 +243,16 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .note { margin: 14px 4px 0; color: var(--muted); }
 .detail-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
 
-/* Zoomed barcode: white, rotated for 1D codes so scanners get a wide target */
-.zoom { position: fixed; inset: 0; z-index: 40; background: #fff; color: #111; display: grid; place-items: center; overflow: hidden; }
-.zoom-inner { width: 86vw; }
-.zoom.rotate .zoom-inner { position: absolute; left: 50%; top: 50%; width: 86vh; transform: translate(-50%, -50%) rotate(90deg); }
+/* Zoomed code: themed backdrop, code always black on a white panel.
+   1D codes are rotated in portrait so scanners get a wide target. */
+.zoom { position: fixed; inset: 0; z-index: 40; background: var(--bg); display: grid; place-items: center; overflow: hidden; }
+.zoom-inner { width: 90vw; padding: 24px 20px; border-radius: 24px; background: #fff; color: #111; box-shadow: var(--shadow); }
+.zoom.rotate .zoom-inner { position: absolute; left: 50%; top: 50%; width: 82vh; transform: translate(-50%, -50%) rotate(90deg); }
 .zoom .code-img svg { max-height: 40vw; }
-.zoom.rotate .code-img svg { max-height: 60vw; }
-.zoom .code-img.square svg { width: 100%; max-width: 80vmin; max-height: none; }
+.zoom.rotate .code-img svg { max-height: 56vw; }
+.zoom .code-img.square svg { width: 100%; max-width: 76vmin; max-height: none; }
 .zoom .code-num { font-size: 20px; }
-.zoom-close { position: absolute; top: calc(var(--safe-t) + 14px); right: 16px; background: #f1f1f1; box-shadow: none; color: #111; }
+.zoom-close { position: absolute; top: calc(var(--safe-t) + 14px); right: 16px; }
 
 /* ---------- Sheets ---------- */
 

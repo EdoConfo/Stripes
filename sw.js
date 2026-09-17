@@ -4,13 +4,13 @@
    - HTML / navigations: network-first (fresh online, cached copy offline).
    - Other same-origin files: cache-first.
    Bump VERSION (and the ?v= in index.html / ASSETS) whenever assets change. */
-const VERSION = "3";
+const VERSION = "4";
 const CACHE = "stripes-" + VERSION;
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./assets/styles.css?v=3",
+  "./assets/styles.css?v=4",
   "./assets/js/main.js?v=3",
   "./assets/js/brands.js",
   "./assets/js/codes.js",
